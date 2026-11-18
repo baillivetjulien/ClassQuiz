@@ -17,6 +17,7 @@ SPDX-License-Identifier: MPL-2.0
 	import KahootResults from '$lib/play/results_kahoot.svelte';
 	import { getLocalization } from '$lib/i18n';
 	import Cookies from 'js-cookie';
+	import Sources from '$lib/agence/Sources.svelte'; // Agence fork
 	const { t } = getLocalization();
 
 	interface Props {
@@ -55,6 +56,13 @@ SPDX-License-Identifier: MPL-2.0
 	});
 
 	let question: Question = $state();
+	// Agence fork: slide shown on the big screen, with its sources (baillivetjulien/leohoot#42)
+	let agence_slide: { title: string; sources: { label: string; url: string }[] } | undefined =
+		$state(undefined);
+	// `question` is typed with the Question component upstream; read its sources with the data type.
+	const question_sources = $derived(
+		(question as unknown as QuestionType | undefined)?.sources ?? []
+	);
 
 	let preventReload = true;
 
@@ -119,10 +127,17 @@ SPDX-License-Identifier: MPL-2.0
 	});
 
 	socket.on('set_question_number', (data) => {
+		agence_slide = undefined; // Agence fork
 		solution = undefined;
 		restart();
 		question = data.question;
 		question_index = data.question_index;
+		answer_results = undefined;
+	});
+
+	// Agence fork: the host shows a slide; the phone shows its sources (leohoot#42)
+	socket.on('agence_slide', (data) => {
+		agence_slide = data;
 		answer_results = undefined;
 	});
 
@@ -175,6 +190,16 @@ SPDX-License-Identifier: MPL-2.0
 			<JoinGame bind:game_pin bind:game_mode bind:username />
 		{:else if JSON.stringify(final_results) !== JSON.stringify([null])}
 			<ShowEndScreen bind:data={scores} show_final_results={true} {username} />
+		{:else if agence_slide}
+			<!-- Agence fork: slide on the big screen, its sources on the phone -->
+			<div class="flex flex-col items-center gap-4 p-6 text-center max-w-md mx-auto">
+				<h2 class="text-2xl font-bold">{agence_slide.title}</h2>
+				{#if agence_slide.sources.length}
+					<p class="text-lg">Pour aller plus loin :</p>
+					<Sources sources={agence_slide.sources} variante="telephone" />
+				{/if}
+				<p class="text-lg opacity-80">Regardez le grand écran.</p>
+			</div>
 		{:else if gameData !== undefined && question_index === ''}
 			<ShowTitle
 				title={gameData.title}
@@ -199,6 +224,12 @@ SPDX-License-Identifier: MPL-2.0
 				{#key unique}
 					<KahootResults {username} question_results={answer_results} bind:scores />
 				{/key}
+				<!-- Agence fork: the question's sources, once the answer is revealed -->
+				{#if question_sources.length}
+					<div class="max-w-md mx-auto p-4">
+						<Sources sources={question_sources} variante="telephone" />
+					</div>
+				{/if}
 			{/if}
 		{/if}
 	</div>

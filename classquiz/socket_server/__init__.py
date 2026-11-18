@@ -13,6 +13,7 @@ import socketio
 from cryptography.fernet import Fernet
 
 from classquiz.config import redis, settings
+from classquiz.agence import agence_slide_payload  # Agence fork
 from classquiz.db.models import (
     PlayGame,
     QuizQuestionType,
@@ -256,6 +257,8 @@ async def set_question_number(sid: str, data: str):
             },
             room=sid,
         )
+        # Agence fork: tell the teams' phones a slide is shown, with its sources (leohoot#42)
+        await sio.emit("agence_slide", agence_slide_payload(game_data, int(float(data))), room=game_pin)
         return
     if game_data.questions[int(float(data))].type == QuizQuestionType.VOTING:
         for i in range(len(temp_return["answers"])):

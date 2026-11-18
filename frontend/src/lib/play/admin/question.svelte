@@ -11,6 +11,7 @@ SPDX-License-Identifier: MPL-2.0
 	import { kahoot_icons } from '$lib/play/kahoot_mode_assets/kahoot_icons.js';
 	import CircularTimer from '$lib/play/circular_progress.svelte';
 	import MediaComponent from '$lib/editor/MediaComponent.svelte';
+	import Sources from '$lib/agence/Sources.svelte'; // Agence fork
 	import { getLocalization } from '$lib/i18n';
 
 	interface Props {
@@ -112,3 +113,7 @@ SPDX-License-Identifier: MPL-2.0
 		</div>
 	{/if}
 {/if}
+<!-- Agence fork: sources at the bottom of the big screen (baillivetjulien/leohoot#42) -->
+<div class="px-4 pb-4">
+	<Sources sources={quiz_data.questions[selected_question].sources} variante="ecran" />
+</div>

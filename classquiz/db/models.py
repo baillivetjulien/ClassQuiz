@@ -15,12 +15,14 @@ import ormar
 from ormar import ReferentialAction
 from pydantic import (
     BaseModel,
+    Field,
     Json,
     field_validator,
     ConfigDict,
     RootModel,
     ValidationInfo,
 )
+from urllib.parse import urlparse
 from enum import Enum
 from . import metadata, database
 from .quiztivity import QuizTivityPage
@@ -160,6 +162,29 @@ class AgenceSlide(BaseModel):
     text: str | None = None
 
 
+class AgenceSource(BaseModel):
+    """Agence fork: a source link shown under a slide or a question, clickable on the teams'
+    phones (baillivetjulien/leohoot#42). Only http(s) links are accepted."""
+
+    label: str
+    url: str
+
+    @field_validator("label")
+    def label_not_blank(cls, v: str) -> str:
+        v = v.strip()
+        if not v or len(v) > 200:
+            raise ValueError("A source label must have 1 to 200 characters")
+        return v
+
+    @field_validator("url")
+    def http_url_only(cls, v: str) -> str:
+        v = v.strip()
+        parsed = urlparse(v)
+        if parsed.scheme not in ("http", "https") or not parsed.netloc or len(v) > 2000:
+            raise ValueError("A source must be an http or https link")
+        return v
+
+
 class QuizQuestion(BaseModel):
     question: str
     time: str  # in Secs
@@ -168,6 +193,7 @@ class QuizQuestion(BaseModel):
     image: str | None = None
     hide_results: bool | None = False
     slide: AgenceSlide | None = None  # Agence fork, see AgenceSlide
+    sources: list[AgenceSource] | None = Field(default=None, max_length=10)  # Agence fork
 
     @field_validator("answers")
     def answers_not_none_if_abcd_type(cls, v, info: ValidationInfo):

@@ -40,7 +40,7 @@ SPDX-License-Identifier: MPL-2.0
 </script>
 
 {#if question.slide}
-	<SlideView slide={question.slide} image={question.image} />
+	<SlideView slide={question.slide} image={question.image} sources={question.sources} />
 {:else}
 	<div class="w-full h-full">
 		<div class="hidden">

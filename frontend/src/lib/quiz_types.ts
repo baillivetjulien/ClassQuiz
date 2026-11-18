@@ -72,6 +72,13 @@ export interface Question {
 	answers: Answers;
 	hide_results?: boolean;
 	slide?: AgenceSlide | null; // Agence fork
+	sources?: AgenceSource[] | null; // Agence fork
+}
+
+// Agence fork: source link shown under a slide or a question (http/https only, checked server-side)
+export interface AgenceSource {
+	label: string;
+	url: string;
 }
 
 export type Answers =

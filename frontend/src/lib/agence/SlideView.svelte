@@ -7,15 +7,17 @@ SPDX-License-Identifier: MPL-2.0
 <!-- Agence fork: native HTML rendering of a simple slide on the host screen
      (layouts validated in the mockups, baillivetjulien/leohoot#41). -->
 <script lang="ts">
-	import type { AgenceSlide } from '$lib/quiz_types';
+	import type { AgenceSlide, AgenceSource } from '$lib/quiz_types';
 	import MediaComponent from '$lib/editor/MediaComponent.svelte';
+	import Sources from '$lib/agence/Sources.svelte';
 
 	interface Props {
 		slide: AgenceSlide;
 		image?: string | null;
+		sources?: AgenceSource[] | null;
 	}
 
-	let { slide, image = null }: Props = $props();
+	let { slide, image = null, sources = null }: Props = $props();
 
 	// Lines starting with a bullet become a list, the others stay paragraphs.
 	const blocks = $derived(
@@ -61,6 +63,7 @@ SPDX-License-Identifier: MPL-2.0
 			{@render corps()}
 		</div>
 	{/if}
+	<Sources {sources} variante="ecran" />
 </div>
 
 {#snippet corps()}
