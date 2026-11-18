@@ -53,7 +53,7 @@ SPDX-License-Identifier: MPL-2.0
 	<div class="grid grid-cols-3 my-2">
 		<span></span>
 		<div class="m-auto">
-			<CircularTimer text={timer_res} progress={circular_progress} color="#ef4444" />
+			<CircularTimer text={timer_res} progress={circular_progress} color="#46d1c0" />
 		</div>
 		<p class="m-auto text-3xl">
 			{$t('admin_page.answers_submitted', { answer_count: answer_count })}
@@ -98,8 +98,8 @@ SPDX-License-Identifier: MPL-2.0
 	{#if timer_res === '0'}
 		<div class="grid grid-cols-2 gap-2 w-full p-4">
 			{#each quiz_data.questions[selected_question].answers as answer, i}
-				<div class="rounded-lg h-fit flex bg-[#B07156]">
-					<span class="text-center text-2xl px-2 py-4 w-full text-black"
+				<div class="rounded-lg h-fit flex bg-agence-indigo">
+					<span class="text-center text-2xl px-2 py-4 w-full text-white"
 						>{answer.answer}</span
 					>
 					<span class="pl-4 w-10"></span>

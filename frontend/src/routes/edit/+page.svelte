@@ -5,12 +5,13 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <script lang="ts">
+	import { pageTitle } from '$lib/agence/config'; // Agence fork
 	import Editor from '$lib/editor.svelte';
 	import { getLocalization } from '$lib/i18n';
-	import { navbarVisible} from '$lib/stores.svelte.ts';
+	import { navbarVisible } from '$lib/stores.svelte.ts';
 	import { QuizQuestionType } from '$lib/quiz_types';
 
-	navbarVisible.visible= false;
+	navbarVisible.visible = false;
 
 	const { t } = getLocalization();
 
@@ -62,7 +63,7 @@ SPDX-License-Identifier: MPL-2.0
 </script>
 
 <svelte:head>
-	<title>ClassQuiz - Edit</title>
+	<title>{pageTitle('Modifier le quiz')}</title>
 </svelte:head>
 {#await get_quiz()}
 	<svg class="h-8 w-8 animate-spin mx-auto my-20" viewBox="3 3 18 18">

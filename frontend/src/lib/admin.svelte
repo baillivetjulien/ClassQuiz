@@ -89,7 +89,7 @@ SPDX-License-Identifier: MPL-2.0
 {/if}
 {#if game_state.timer_res !== '0' && game_state.selected_question >= 0}
 	<span
-		class="fixed top-0 bg-red-500 h-8 transition-all"
+		class="fixed top-0 bg-agence-turquoise h-8 transition-all"
 		class:mt-10={game_state.control_visible}
 		style="width: {(100 /
 			parseInt(game_state.quiz_data.questions[game_state.selected_question].time)) *

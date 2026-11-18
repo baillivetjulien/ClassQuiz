@@ -6,7 +6,8 @@ SPDX-License-Identifier: MPL-2.0
 
 <script lang="ts">
 	import '../app.css';
-	import Navbar from '$lib/navbar.svelte';
+	// Agence fork: brand navbar instead of the upstream marketing one
+	import Navbar from '$lib/agence/Navbar.svelte';
 	import { pathname } from '$lib/stores';
 	import { navbarVisible } from '$lib/stores.svelte';
 
@@ -22,20 +23,18 @@ SPDX-License-Identifier: MPL-2.0
 
 	if (browser) {
 		pathname.set(window.location.pathname);
-		if (
-			localStorage.theme === 'dark' ||
-			(!('theme' in localStorage) &&
-				window.matchMedia('(prefers-color-scheme: dark)').matches)
-		) {
+		// Agence fork: light theme unless dark mode was explicitly chosen (projected big screens)
+		if (localStorage.theme === 'dark') {
 			document.documentElement.classList.add('dark');
 		} else {
 			document.documentElement.classList.remove('dark');
 		}
 	}
-	let start_language = 'en';
+	// Agence fork: always French. A stale 'language' value left by the upstream language
+	// toggle (removed from our navbar and footer) is ignored on purpose.
+	const start_language = 'fr';
 	const rtl_languages = ['he', 'prs', 'ps'];
 	if (browser) {
-		start_language = localStorage.getItem('language') ?? 'en';
 		document.documentElement.lang = start_language;
 		document.documentElement.dir = rtl_languages.includes(start_language) ? 'rtl' : 'ltr';
 	}
@@ -75,7 +74,7 @@ SPDX-License-Identifier: MPL-2.0
 
 		// bg-gradient-to-r from-[#009444] via-[#39b54a] to-[#8dc63f]
 		//background: linear-gradient(to right, #009444, #39b54a, #8dc63f) repeat-y;
-		background-color: #d6edc9;
+		background-color: var(--color-agence-fond); /* Agence fork (was #d6edc9) */
 		background-size: cover;
 		/*background: linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #FFF800 100%); */
 		/*background: linear-gradient(-225deg, #22E1FF 0%, #1D8FE1 48%, #625EB1 100%); */

@@ -11,6 +11,31 @@ SPDX-License-Identifier: MPL-2.0
 @plugin "@tailwindcss/typography";
 @tailwind utilities;
 
+/* ---- Agence fork: brand theme (palette validated with the counsellors, Lexend self-hosted) ---- */
+@font-face {
+	font-family: 'Lexend';
+	src: url('/fonts/lexend-latin-var.woff2') format('woff2');
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+@theme {
+	--font-sans: 'Lexend', ui-sans-serif, system-ui, sans-serif;
+	--color-agence-indigo: #4d5a9b;
+	--color-agence-indigo-fonce: #3a4578;
+	--color-agence-magenta: #cc0279;
+	--color-agence-jaune: #fcbe0b;
+	--color-agence-turquoise: #46d1c0;
+	--color-agence-vert: #48b274;
+	--color-agence-orange: #f28c28;
+	--color-agence-encre: #1a1a1a;
+	--color-agence-encre-douce: #51566b;
+	--color-agence-fond: #f6f7fb;
+	--color-agence-bord: #e3e6ef;
+	--color-agence-juste: #1f8f5b;
+}
+/* ---- end Agence theme ---- */
+
 .marck-script {
 	font-family: 'Marck Script';
 }
@@ -20,7 +45,7 @@ SPDX-License-Identifier: MPL-2.0
 }
 
 .link-hover:hover {
-	color: #4e6e58;
+	color: var(--color-agence-indigo);
 }
 @layer base {
 	button:not(:disabled),
@@ -29,17 +54,19 @@ SPDX-License-Identifier: MPL-2.0
 	}
 }
 
+/* Agence fork: green gradient replaced by the brand background */
 @utility normal-background {
-	@apply bg-gradient-to-r from-[#009444] via-[#39b54a] to-[#8dc63f] dark:bg-[#0f2702] dark:from-[#0f2702] dark:via-[#0f2702] dark:to-[#0f2702];
+	@apply bg-agence-fond;
 }
 
+/* Agence fork: host controls in brand indigo, pill-shaped */
 @utility admin-button {
-	@apply px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded-sm text-center hover:bg-gray-600 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50;
+	@apply px-5 py-2.5 leading-5 font-semibold text-white transition-colors duration-200 transform bg-agence-indigo rounded-full text-center shadow-md hover:bg-agence-indigo-fonce focus:outline-hidden focus-visible:ring-4 focus-visible:ring-agence-turquoise disabled:cursor-not-allowed disabled:opacity-50;
 }
 
 @utility action-button {
-	@apply px-4 py-2 leading-5 text-black dark:text-white transition-colors duration-200 transform bg-gray-50 dark:bg-gray-700 rounded-sm text-center hover:bg-gray-300 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-600;
+	@apply px-5 py-2.5 leading-5 font-semibold text-agence-indigo-fonce transition-colors duration-200 transform bg-white border-2 border-agence-bord rounded-full text-center hover:bg-agence-fond focus:outline-hidden focus-visible:ring-4 focus-visible:ring-agence-turquoise disabled:cursor-not-allowed disabled:opacity-50;
 }
 @utility btn-nav {
-	@apply text-lg font-medium px-3 text-gray-600 hover:text-green-600 py-1.5 transition-all duration-300;
+	@apply text-lg font-medium px-3 text-agence-encre-douce hover:text-agence-indigo py-1.5 transition-all duration-300;
 }

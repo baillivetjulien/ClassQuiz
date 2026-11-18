@@ -6,6 +6,7 @@ SPDX-License-Identifier: MPL-2.0
 
 <!--suppress ALL -->
 <script lang="ts">
+	import { pageTitle } from '$lib/agence/config'; // Agence fork
 	import { socket } from '$lib/socket';
 	import JoinGame from '$lib/play/join.svelte';
 	import type { Answer, Question as QuestionType } from '$lib/quiz_types';
@@ -162,7 +163,7 @@ SPDX-License-Identifier: MPL-2.0
 
 <svelte:window onbeforeunload={confirmUnload} />
 <svelte:head>
-	<title>ClassQuiz - Play</title>
+	<title>{pageTitle('Jouer')}</title>
 </svelte:head>
 <div
 	class="min-h-screen min-w-full"

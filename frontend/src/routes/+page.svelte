@@ -1,479 +1,156 @@
 <!--
 SPDX-FileCopyrightText: 2023 Marlon W (Mawoka)
+SPDX-FileCopyrightText: 2026 Agence régionale de l'orientation et des métiers de Normandie
 
 SPDX-License-Identifier: MPL-2.0
 -->
 
+<!-- Agence fork: the upstream marketing landing page is replaced by two entry points. -->
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { navbarVisible } from '$lib/stores.svelte.ts';
-	import { getLocalization } from '$lib/i18n';
 	import Footer from '$lib/footer.svelte';
-	import WebPOpenGraph from '$lib/assets/landing/opengraph-home.webp';
-	import JpgOpenGraph from '$lib/assets/landing/opengraph-home.jpg';
-	import Newsletter from '$lib/landing/newsletter.svelte';
-	import { fly, fade } from 'svelte/transition';
-
-	import FindScreenshot from '$lib/assets/landing_new/find.webp';
-	import ImportScreenshot from '$lib/assets/landing_new/import.webp';
-	import EditScreenshot from '$lib/assets/landing_new/edit.webp';
-	import SelectScreenshot from '$lib/assets/landing_new/select.webp';
-	import ResultScreenshot from '$lib/assets/landing_new/result.webp';
-	import WinnersScreenshot from '$lib/assets/landing_new/winners.webp';
-	import { onMount } from 'svelte';
-
-	const { t } = getLocalization();
+	import { APP_NAME, pageTitle } from '$lib/agence/config';
 
 	navbarVisible.visible = true;
 
-	let newsletterModalOpen: boolean = $state();
-	onMount(() => {
-		const ls = localStorage.getItem('newsletter');
-		newsletterModalOpen = ls === null;
-	});
+	let pin = $state('');
+	const pinValide = $derived(/^\d{6}$/.test(pin.replace(/\s/g, '')));
 
-	// eslint-disable-next-line no-unused-vars
-	enum SelectedCreateThing {
-		// eslint-disable-next-line no-unused-vars
-		Create,
-		// eslint-disable-next-line no-unused-vars
-		Find,
-		// eslint-disable-next-line no-unused-vars
-		Import
-	}
-
-	// eslint-disable-next-line no-unused-vars
-	enum SelectedPlayThing {
-		// eslint-disable-next-line no-unused-vars
-		Select,
-		// eslint-disable-next-line no-unused-vars
-		Results,
-		// eslint-disable-next-line no-unused-vars
-		Winners
-	}
-
-	let selected_create_thing = $state(SelectedCreateThing.Create);
-	let selected_play_thing = $state(SelectedPlayThing.Select);
-
-	const classquiz_reasons = [
-		{
-			headline: $t('index_page.no_player_limit'),
-			content: $t('index_page.no_player_limit_content')
-		},
-		{
-			headline: $t('index_page.no_tracking'),
-			content: $t('index_page.no_tracking_content')
-		},
-		{
-			headline: $t('index_page.self_hostable'),
-			content: $t('index_page.self_hostable_content')
-		},
-		{
-			headline: $t('index_page.german_server'),
-			content: $t('index_page.german_server_content')
-		},
-		{
-			headline: $t('index_page.user_friendly'),
-			content: $t('index_page.user_friendly_content')
-		},
-		{
-			headline: $t('index_page.completely_free'),
-			content: $t('index_page.completely_free_content')
-		},
-		{
-			headline: $t('index_page.quiz_results_downloadable'),
-			content: $t('index_page.quiz_results_downloadable_content')
-		},
-		{
-			headline: $t('index_page.multilingual'),
-			content: $t('index_page.multilingual_content')
-		},
-		{
-			headline: $t('index_page.dark_mode'),
-			content: $t('index_page.dark_mode_content')
-		},
-		{
-			headline: $t('index_page.download_quizzes'),
-			content: $t('index_page.download_quizzes_content')
-		},
-		{
-			headline: $t('index_page.community_driven'),
-			content: $t('index_page.community_driven_content')
-		}
-	];
-	let selected_classquiz_reason = $state(0);
+	const rejoindre = (e: SubmitEvent) => {
+		e.preventDefault();
+		if (pinValide) goto(`/play?pin=${pin.replace(/\s/g, '')}`);
+	};
 </script>
 
 <svelte:head>
-	<title>ClassQuiz - {$t('index_page.meta.title')}</title>
-	<meta name="description" content={$t('index_page.meta.description')} />
-	<title>ClassQuiz - Home</title>
+	<title>{pageTitle()}</title>
 	<meta
 		name="description"
-		content="ClassQuiz is a quiz-application like KAHOOT!, but open-source. You can create quizzes and play them remotely with other people."
+		content="Quiz en direct pour les ateliers de l'Agence de l'orientation."
 	/>
-
-	<meta property="og:url" content="https://classquiz.de/" />
-	<meta property="og:type" content="website" />
-	<meta property="og:title" content="ClassQuiz - {$t('index_page.meta.title')}" />
-	<meta
-		property="og:description"
-		content="ClassQuiz is a quiz-application like KAHOOT!, but open-source. You can create quizzes and play them remotely with other people."
-	/>
-	<meta property="og:image" content={JpgOpenGraph} />
-
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta property="twitter:domain" content="classquiz.de" />
-	<meta property="twitter:url" content="https://classquiz.de/" />
-	<meta name="twitter:title" content="ClassQuiz - {$t('index_page.meta.title')}" />
-	<meta
-		name="twitter:description"
-		content="ClassQuiz is a quiz-application like KAHOOT!, but open-source. You can create quizzes and play them remotely with other people."
-	/>
-	<meta name="twitter:image" content={WebPOpenGraph} />
+	<meta name="robots" content="noindex" />
 </svelte:head>
-<div class="min-h-screen flex flex-col">
-	<section class="pb-40">
-		<div class="pt-12 text-center">
-			<h1 class="sm:text-8xl text-6xl mt-6 marck-script">ClassQuiz</h1>
-			<p class="text-xl mt-4">{$t('index_page.slogan')}</p>
-		</div>
-	</section>
-	<section>
-		<h2 class="text-center text-5xl mb-6">{$t('index_page.how_does_classquiz_work')}</h2>
 
-		<div class="flex justify-center w-full">
-			<h3 class="text-center text-3xl rounded-t-lg bg-white/40 py-2 px-6">
-				{$t('index_page.get_a_quiz')}
-			</h3>
-		</div>
-		<div
-			class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 bg-white/40 shadow-lg mb-12 lg:mx-12 mx-4 rounded-lg"
-		>
-			<div>
-				<div class="p-2 rounded-lg">
-					{#if selected_create_thing === SelectedCreateThing.Create}
-						<img
-							class="rounded-lg relative"
-							src={EditScreenshot}
-							in:fade|global
-							alt="Screenshot of the import-page showing an URL to Kahoot! entered"
-						/>
-					{:else if selected_create_thing === SelectedCreateThing.Find}
-						<img
-							class="rounded-lg relative"
-							src={FindScreenshot}
-							in:fade|global
-							alt="Screenshot of the search-page showing one found quiz for the term 'Country'"
-						/>
-					{:else if selected_create_thing === SelectedCreateThing.Import}
-						<img
-							class="rounded-lg relative"
-							src={ImportScreenshot}
-							in:fade|global
-							alt="Screenshot of the import-page showing an URL to Kahoot! entered"
-						/>
-					{:else}
-						<p>Shouldn't happen!</p>
-					{/if}
-				</div>
-			</div>
-			<div
-				class="lg:border-l lg:border-l-black lg:border-t-0 border-t border-t-black flex lg:flex-col flex-row stretch"
+<main class="accueil">
+	<section class="intro">
+		<h1>{APP_NAME}</h1>
+		<p>Les quiz en direct des ateliers de l'Agence de l'orientation.</p>
+	</section>
+
+	<section class="entrees">
+		<form class="carte" onsubmit={rejoindre}>
+			<h2>Rejoindre une partie</h2>
+			<p>Saisissez le code affiché sur le grand écran. Pas besoin de compte.</p>
+			<label class="sr-only" for="pin">Code de la partie</label>
+			<input
+				id="pin"
+				class="pin"
+				bind:value={pin}
+				inputmode="numeric"
+				autocomplete="off"
+				maxlength="7"
+				placeholder="123 456"
+			/>
+			<button class="bouton bouton-principal" type="submit" disabled={!pinValide}
+				>Rejoindre</button
 			>
-				<div
-					class="m-2 rounded-lg p-2 bg-white/40 transition-all cursor-pointer lg:h-full"
-					onclick={() => {
-						selected_create_thing = SelectedCreateThing.Create;
-					}}
-					onkeyup={() => {
-						selected_create_thing = SelectedCreateThing.Create;
-					}}
-					class:shadow-2xl={selected_create_thing === SelectedCreateThing.Create}
-					class:opacity-70={selected_create_thing !== SelectedCreateThing.Create}
-					role="button"
-					tabindex="0"
-				>
-					<div
-						class="rounded-lg w-fit p-1 bg-lime-500 hover:bg-lime-400 transition shadow-lg"
-					>
-						<svg
-							aria-label="Pencil-Icon"
-							class="w-8 h-8 text-black"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-							/>
-						</svg>
-					</div>
-					<h5 class="text-xl w-fit dark:text-black">{$t('words.create')}</h5>
-					<p class="dark:text-black">{$t('index_page.create_a_quiz_from_scratch')}</p>
-				</div>
-				<div
-					class="m-2 rounded-lg p-2 bg-white/40 transition-all cursor-pointer lg:h-full"
-					onclick={() => {
-						selected_create_thing = SelectedCreateThing.Find;
-					}}
-					onkeyup={() => {
-						selected_create_thing = SelectedCreateThing.Find;
-					}}
-					role="button"
-					tabindex="0"
-					class:shadow-2xl={selected_create_thing === SelectedCreateThing.Find}
-					class:opacity-70={selected_create_thing !== SelectedCreateThing.Find}
-				>
-					<div
-						class="rounded-lg w-fit p-1 bg-lime-500 hover:bg-lime-400 transition shadow-lg"
-					>
-						<svg
-							class="w-8 h-8 text-black"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-							aria-label="magnifying glass-Icon"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-							/>
-						</svg>
-					</div>
-					<h5 class="text-xl dark:text-black">{$t('words.find')}</h5>
-					<p class="dark:text-black">{$t('index_page.find_or_explore')}</p>
-				</div>
-			</div>
-		</div>
-	</section>
+		</form>
 
-	<section class="mt-24">
-		<div class="flex justify-center w-full">
-			<h2 class="text-center text-3xl rounded-t-lg bg-white/40 py-2 px-6">
-				{$t('index_page.play_quiz')}
-			</h2>
-		</div>
-
-		<div
-			class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 bg-white/40 shadow-lg mb-12 lg:mx-12 mx-4 rounded-lg"
-		>
-			<div>
-				<div class="p-2 rounded-lg">
-					{#if selected_play_thing === SelectedPlayThing.Select}
-						<img
-							class="rounded-lg relative"
-							src={SelectScreenshot}
-							in:fade|global
-							alt="Screenshot of the screen where an answer can be selected"
-						/>
-					{:else if selected_play_thing === SelectedPlayThing.Results}
-						<img
-							class="rounded-lg relative"
-							src={ResultScreenshot}
-							in:fade|global
-							alt="Screenshot of the results with a table showing how many players chose which answer"
-						/>
-					{:else if selected_play_thing === SelectedPlayThing.Winners}
-						<img
-							class="rounded-lg relative"
-							src={WinnersScreenshot}
-							in:fade|global
-							alt="Screenshot of the import-page showing an URL to Kahoot! entered"
-						/>
-					{:else}
-						<p>Shouldn't happen!</p>
-					{/if}
-				</div>
-			</div>
-			<div
-				class="lg:border-l lg:border-l-black lg:border-t-0 border-t border-t-black flex lg:flex-col flex-row stretch"
+		<div class="carte">
+			<h2>Espace conseillère</h2>
+			<p>Créer, modifier et animer les quiz des ateliers.</p>
+			<a class="bouton bouton-secondaire" href="/account/login?returnTo=/dashboard"
+				>Se connecter</a
 			>
-				<div
-					class="m-2 rounded-lg p-2 bg-white/40 transition-all cursor-pointer lg:h-full"
-					onclick={() => {
-						selected_play_thing = SelectedPlayThing.Select;
-					}}
-					onkeyup={() => {
-						selected_play_thing = SelectedPlayThing.Select;
-					}}
-					role="button"
-					tabindex="0"
-					class:shadow-2xl={selected_play_thing === SelectedPlayThing.Select}
-					class:opacity-70={selected_play_thing !== SelectedPlayThing.Select}
-				>
-					<div
-						class="rounded-lg bg-emerald-300 w-fit p-1 hover:bg-lime-400 transition shadow-lg"
-					>
-						<svg
-							aria-label="Mouse-Click icon"
-							class="w-8 h-8 text-black"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-							/>
-						</svg>
-					</div>
-					<h5 class="text-xl w-fit dark:text-black">{$t('index_page.select_answer')}</h5>
-					<p class="dark:text-black">{$t('index_page.choose_answer_wisely')}</p>
-				</div>
-				<div
-					class="m-2 rounded-lg p-2 bg-white/40 transition-all cursor-pointer lg:h-full"
-					role="button"
-					tabindex="0"
-					onclick={() => {
-						selected_play_thing = SelectedPlayThing.Results;
-					}}
-					onkeyup={() => {
-						selected_play_thing = SelectedPlayThing.Results;
-					}}
-					class:shadow-2xl={selected_play_thing === SelectedPlayThing.Results}
-					class:opacity-70={selected_play_thing !== SelectedPlayThing.Results}
-				>
-					<div
-						class="rounded-lg bg-emerald-300 w-fit p-1 hover:bg-lime-400 transition shadow-lg"
-					>
-						<svg
-							aria-label="context-menu icon"
-							class="w-8 h-8 text-black"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 6h16M4 10h16M4 14h16M4 18h16"
-							/>
-						</svg>
-					</div>
-					<h5 class="text-xl dark:text-black">{$t('index_page.view_results')}</h5>
-					<p class="dark:text-black">{$t('index_page.check_if_chosen_wisely')}</p>
-				</div>
-				<div
-					class="m-2 rounded-lg p-2 bg-white/40 transition-all cursor-pointer lg:h-full"
-					role="button"
-					tabindex="0"
-					onclick={() => {
-						selected_play_thing = SelectedPlayThing.Winners;
-					}}
-					onkeyup={() => {
-						selected_play_thing = SelectedPlayThing.Winners;
-					}}
-					class:shadow-2xl={selected_play_thing === SelectedPlayThing.Winners}
-					class:opacity-70={selected_play_thing !== SelectedPlayThing.Winners}
-				>
-					<div
-						class="rounded-lg bg-emerald-300 w-fit p-1 hover:bg-lime-400 transition shadow-lg"
-					>
-						<svg
-							aria-label="sparkling stars-icon"
-							class="w-8 h-8 text-black"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-							/>
-						</svg>
-					</div>
-					<h5 class="text-xl dark:text-black">{$t('index_page.list_winners')}</h5>
-					<p class="dark:text-black">{$t('index_page.get_ranking_and_winners')}</p>
-				</div>
-			</div>
 		</div>
 	</section>
+</main>
 
-	<section class="mt-24">
-		<div class="flex justify-center w-full">
-			<h2 class="text-center text-3xl rounded-t-lg bg-white/40 py-2 px-6">
-				{$t('index_page.why_classquiz')}
-			</h2>
-		</div>
-
-		<div
-			class="grid grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 bg-white/40 shadow-lg mb-12 lg:mx-12 mx-4 rounded-lg"
-		>
-			<div>
-				<div class="p-12 rounded-lg flex justify-center items-center h-full">
-					<p class="dark:text-black">
-						{classquiz_reasons[selected_classquiz_reason].content}
-					</p>
-				</div>
-			</div>
-			<div
-				class="lg:border-l lg:border-l-black lg:border-t-0 border-t border-t-black flex lg:flex-col flex-row stretch overflow-x-auto why-classquiz"
-			>
-				{#each classquiz_reasons as reason, index}
-					<div
-						class="m-2 rounded-lg p-2 bg-white/40 transition-all cursor-pointer lg:h-full"
-						role="button"
-						tabindex="0"
-						onclick={() => {
-							selected_classquiz_reason = index;
-						}}
-						onkeyup={() => {
-							selected_classquiz_reason = index;
-						}}
-						class:shadow-2xl={selected_classquiz_reason === index}
-						class:opacity-70={selected_classquiz_reason !== index}
-					>
-						<h5 class="text-xl dark:text-black">{reason.headline}</h5>
-					</div>
-				{/each}
-			</div>
-		</div>
-	</section>
-</div>
-{#if newsletterModalOpen}
-	<div
-		class="fixed bottom-8 right-5 bg-white rounded-lg h-fit w-11/12 ml-5 lg:w-2/12 z-50 p-2 dark:bg-gray-700"
-		transition:fly|global
-	>
-		<Newsletter bind:open={newsletterModalOpen} />
-	</div>
-{/if}
 <Footer />
 
 <style>
-	.why-classquiz::-webkit-scrollbar {
-		height: 0.8rem;
-		margin-bottom: 5rem;
+	.accueil {
+		max-width: 64rem;
+		margin: 0 auto;
+		padding: 3rem 1rem 1rem;
 	}
-
-	.why-classquiz::-webkit-scrollbar-track {
-		box-shadow: inset 0 0 10px 10px transparent;
-		border: solid 3px transparent;
+	.intro {
+		text-align: center;
+		margin-bottom: 2.5rem;
 	}
-
-	.why-classquiz::-webkit-scrollbar-thumb {
-		box-shadow: inset 0 0 10px 10px #374151;
-		border: solid 3px transparent;
-		border-radius: 15px;
+	.intro h1 {
+		font-size: clamp(2rem, 5vw, 3.25rem);
+		font-weight: 800;
+		color: var(--color-agence-indigo-fonce);
+		line-height: 1.1;
 	}
-
-	.why-classquiz::-webkit-scrollbar-thumb:hover {
-		box-shadow: inset 0 0 10px 10px #555;
-		border: solid 3px transparent;
+	.intro p {
+		margin-top: 0.75rem;
+		font-size: 1.25rem;
+		color: var(--color-agence-encre-douce);
+	}
+	.entrees {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+		gap: 1.5rem;
+	}
+	.carte {
+		background: #fff;
+		border-radius: 1.75rem;
+		box-shadow: 0 6px 24px rgb(58 69 120 / 0.12);
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.carte h2 {
+		font-size: 1.6rem;
+		font-weight: 700;
+		color: var(--color-agence-encre);
+	}
+	.carte p {
+		color: var(--color-agence-encre-douce);
+		line-height: 1.5;
+	}
+	.pin {
+		font-size: 2.5rem;
+		font-weight: 700;
+		letter-spacing: 0.4rem;
+		text-align: center;
+		color: var(--color-agence-indigo);
+		border: 3px solid var(--color-agence-bord);
+		border-radius: 1rem;
+		padding: 0.75rem;
+		width: 100%;
+	}
+	.pin:focus {
+		outline: none;
+		border-color: var(--color-agence-indigo);
+	}
+	.bouton {
+		display: block;
+		text-align: center;
+		border-radius: 999px;
+		padding: 1rem;
+		font-size: 1.25rem;
+		font-weight: 700;
+		margin-top: auto;
+	}
+	.bouton:focus-visible {
+		outline: 4px solid var(--color-agence-turquoise);
+		outline-offset: 2px;
+	}
+	.bouton-principal {
+		background: var(--color-agence-magenta);
+		color: #fff;
+	}
+	.bouton-principal:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
+	}
+	.bouton-secondaire {
+		background: var(--color-agence-indigo);
+		color: #fff;
 	}
 </style>

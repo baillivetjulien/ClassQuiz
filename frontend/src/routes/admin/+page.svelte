@@ -5,6 +5,7 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <script lang="ts">
+	import { pageTitle } from '$lib/agence/config'; // Agence fork
 	import { socket } from '$lib/socket';
 	import { getLocalization } from '$lib/i18n';
 	import { navbarVisible } from '$lib/stores.svelte.ts';
@@ -240,7 +241,7 @@ SPDX-License-Identifier: MPL-2.0
 
 <svelte:window onbeforeunload={confirmUnload} />
 <svelte:head>
-	<title>ClassQuiz - Host</title>
+	<title>{pageTitle('Animer la partie')}</title>
 </svelte:head>
 <div
 	class="min-h-screen min-w-full"

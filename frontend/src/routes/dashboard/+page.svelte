@@ -5,6 +5,7 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <script lang="ts">
+	import { pageTitle } from '$lib/agence/config'; // Agence fork
 	import DownloadQuiz from '$lib/components/DownloadQuiz.svelte';
 	import type { QuizData } from '$lib/quiz_types';
 	import { getLocalization } from '$lib/i18n';
@@ -106,7 +107,7 @@ SPDX-License-Identifier: MPL-2.0
 </script>
 
 <svelte:head>
-	<title>ClassQuiz - Dashboard</title>
+	<title>{pageTitle('Mes quiz')}</title>
 </svelte:head>
 <Analytics bind:quiz={analytics_quiz_selected} />
 <CommandpaletteNotice />

@@ -5,8 +5,19 @@
 import type { Handle } from '@sveltejs/kit';
 import * as jose from 'jose';
 
+// Agence fork: upstream public pages (explore, search, docs, sign-up) are not offered.
+const HIDDEN_PAGES = [
+	/^\/explore(\/|$)/,
+	/^\/search(\/|$)/,
+	/^\/docs(\/|$)/,
+	/^\/account\/register(\/|$)/
+];
+
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle: Handle = async ({ event, resolve }) => {
+	if (HIDDEN_PAGES.some((page) => page.test(event.url.pathname))) {
+		return new Response(null, { status: 302, headers: { location: '/' } });
+	}
 	const access_token = event.cookies.get('access_token');
 	if (!access_token) {
 		event.locals.email = null;

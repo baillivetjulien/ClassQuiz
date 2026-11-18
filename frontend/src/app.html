@@ -5,7 +5,7 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="description" content="" />
@@ -36,10 +36,11 @@ SPDX-License-Identifier: MPL-2.0
 			href="%sveltekit.assets%/favicon-16x16.png"
 		/>
 		<link rel="manifest" href="%sveltekit.assets%/site.webmanifest" />
-		<meta name="apple-mobile-web-app-title" content="ClassQuiz" />
-		<meta name="application-name" content="ClassQuiz" />
-		<meta name="msapplication-TileColor" content="#00a300" />
-		<meta name="theme-color" content="#ffffff" />
+		<!-- Agence fork: public name from PUBLIC_APP_NAME, brand indigo -->
+		<meta name="apple-mobile-web-app-title" content="%sveltekit.env.PUBLIC_APP_NAME%" />
+		<meta name="application-name" content="%sveltekit.env.PUBLIC_APP_NAME%" />
+		<meta name="msapplication-TileColor" content="#4d5a9b" />
+		<meta name="theme-color" content="#4d5a9b" />
 		%sveltekit.head%
 	</head>
 	<body>

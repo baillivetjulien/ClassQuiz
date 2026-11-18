@@ -288,6 +288,7 @@
         "nothing_here": "There is nothing here..."
     },
     "play_page": {
+        "enter_your_answer": "Enter your answer",
         "end_sentence": "That's it! This was the quiz.",
         "1st_place": "1st Place",
         "2nd_place": "2nd Place",

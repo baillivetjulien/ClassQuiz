@@ -5,6 +5,7 @@ SPDX-License-Identifier: MPL-2.0
 -->
 
 <script lang="ts">
+	import { pageTitle } from '$lib/agence/config'; // Agence fork
 	import { alertModal } from '$lib/stores';
 	import { navbarVisible } from '$lib/stores.svelte';
 	import { slide } from 'svelte/transition';
@@ -81,7 +82,7 @@ SPDX-License-Identifier: MPL-2.0
 </script>
 
 <svelte:head>
-	<title>ClassQuiz - Login</title>
+	<title>{pageTitle('Connexion')}</title>
 </svelte:head>
 <div class="flex items-center justify-center h-screen">
 	{#if verified}
