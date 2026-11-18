@@ -19,7 +19,7 @@ SPDX-License-Identifier: MPL-2.0
 	let canvas: Pikaso;
 	let img_src = $state('');
 
-	onMount(() => {
+	onMount(async () => {
 		canvas = new Pikaso({
 			container: canvas_el,
 			snapToGrid: {},
@@ -29,7 +29,9 @@ SPDX-License-Identifier: MPL-2.0
 		});
 		if (typeof question.answers === 'string') {
 			const data = JSON.parse(question.answers);
-			canvas.import.json(data);
+			// import.json() is async: it resolves once every image of the slide is loaded.
+			// Exporting before that produced slides without their images.
+			await canvas.import.json(data);
 			img_src = canvas.export.toImage();
 		}
 	});
