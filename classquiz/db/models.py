@@ -143,6 +143,23 @@ class TextQuizAnswer(BaseModel):
     case_sensitive: bool
 
 
+class AgenceSlideLayout(str, Enum):
+    """Agence fork: layouts of a slide rendered natively in HTML."""
+
+    TITLE_TEXT_IMAGE = "TITLE_TEXT_IMAGE"  # title and text next to the question image
+    BIG_IMAGE = "BIG_IMAGE"  # the question image fills the screen, optional title
+    TEXT = "TEXT"  # title and text only
+
+
+class AgenceSlide(BaseModel):
+    """Agence fork: optional simple slide content. When set on a SLIDE question, the big screen
+    renders it in HTML (with `QuizQuestion.image`) instead of the Pikaso canvas stored in `answers`."""
+
+    layout: AgenceSlideLayout = AgenceSlideLayout.TITLE_TEXT_IMAGE
+    title: str | None = None
+    text: str | None = None
+
+
 class QuizQuestion(BaseModel):
     question: str
     time: str  # in Secs
@@ -150,6 +167,7 @@ class QuizQuestion(BaseModel):
     answers: list[ABCDQuizAnswer] | RangeQuizAnswer | list[TextQuizAnswer] | list[VotingQuizAnswer] | str
     image: str | None = None
     hide_results: bool | None = False
+    slide: AgenceSlide | None = None  # Agence fork, see AgenceSlide
 
     @field_validator("answers")
     def answers_not_none_if_abcd_type(cls, v, info: ValidationInfo):

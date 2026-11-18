@@ -55,6 +55,15 @@ export interface OrderQuizAnswer {
 	id?: number;
 }
 
+// Agence fork: simple slide rendered natively in HTML (see classquiz/db/models.py AgenceSlide)
+export type AgenceSlideLayout = 'TITLE_TEXT_IMAGE' | 'BIG_IMAGE' | 'TEXT';
+
+export interface AgenceSlide {
+	layout: AgenceSlideLayout;
+	title?: string | null;
+	text?: string | null;
+}
+
 export interface Question {
 	time: string;
 	question: string;
@@ -62,6 +71,7 @@ export interface Question {
 	image?: string;
 	answers: Answers;
 	hide_results?: boolean;
+	slide?: AgenceSlide | null; // Agence fork
 }
 
 export type Answers =
